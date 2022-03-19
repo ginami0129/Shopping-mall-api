@@ -1,6 +1,9 @@
-import express from "express"
+import express, {Router} from "express"
 import morgan from "morgan"
 import cors from "cors"
+
+import productRoute from "./routes/productRoute.js";
+import orderRoute  from "./routes/orderRoute.js";
 
 const app = express();
 
@@ -18,6 +21,9 @@ app.get('/', (req, res) => {
   })
 })
 
+// Route
+app.use("/api/products", productRoute)
+app.use("/api/orders", orderRoute)
 
 
 const PORT = 8080;
