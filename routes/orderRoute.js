@@ -10,8 +10,15 @@ router.get("/", (req, res) => {
 })
 
 router.post('/', (req, res) => {
+    const newOrder = {
+        product: req.body.product,
+        qty: req.body.quantity,
+        message: req.body.msg
+    }
+
     res.json({
-        msg: 'Create order'
+        msg: 'Create order',
+        order: newOrder
     })
 })
 
