@@ -55,11 +55,24 @@ router.post('/', asyncHandler(async (req, res) => {
 
 }))
 
-router.put('/', (req, res) => {
-    res.json( {
-        msg: 'Updated Product'
-    })
-})
+router.put('/:productID', asyncHandler( async(req, res) => {
+
+    const product = await Product.findById(req.params.productID);
+
+    if (product) {
+        product.name = req.body.name || product.name;
+        product.price = req.body.price || product.price;
+        product.brand = req.body.brand || product.brand;
+        product.category = req.body.category || product.category;
+        product.description = req.body.desc || product.description;
+
+        const updatedProduct = await product.save();
+        res.json({
+            msg : "updated at " + req.params.productID,
+            product : updatedProduct
+        })
+    }
+}))
 
 router.delete('/', asyncHandler( async(req, res) => {
     await Product.remove();
