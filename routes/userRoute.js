@@ -1,9 +1,7 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
-import gravatar from "gravatar";
-import mongoose from "mongoose";
+import generateToken from "../utils/generateToken.js";
 
 const router = express.Router()
 
@@ -23,17 +21,17 @@ router.post('/', asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("User already exists");
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const avatar = gravatar.url(
-        email,
-        {
-            s: '200',
-            r: 'pg',
-            d: 'mm',
-            protocol: 'https'
-        }
-    )
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    //
+    // const avatar = gravatar.url(
+    //     email,
+    //     {
+    //         s: '200',
+    //         r: 'pg',
+    //         d: 'mm',
+    //         protocol: 'https'
+    //     }
+    // )
 
     // const newUser = new User ({
     //     name,
@@ -41,13 +39,12 @@ router.post('/', asyncHandler(async (req, res) => {
     //     password,
     // });
     //
-    // const createdUser = await newUser.save();
+    // const user = await newUser.save();
 
     const user = await User.create({
         name,
         email,
-        password: hashedPassword,
-        profileImg: avatar,
+        password,
     })
 
     if (user) {
@@ -73,16 +70,20 @@ router.post('/login', asyncHandler(async(req, res) => {
         throw new Error("User Not Found");
     }
     // password 매칭
-    const isMatched = await bcrypt.compare(password, user.password);
+    // const isMatched = await bcrypt.compare(password, user.password);
+
+    const isMatched = await user.comparePassword(password);
     if (!isMatched) {
         res.status(409);
         throw new Error("Password is not matched");
     }
+    // console.log(i)
 
     // response
     res.json({
-        msg: "Login Success",
-        user
+        // test: isMatched,
+        success: isMatched,
+        token: generateToken(user._id)
     })
 }))
 
