@@ -8,6 +8,7 @@ import connectedDB from "./config/database.js";
 
 import productRoute from "./routes/productRoute.js";
 import orderRoute  from "./routes/orderRoute.js";
+import userRoute from "./routes/userRoute.js";
 
 dotenv.config();
 
@@ -33,6 +34,8 @@ app.get('/', (req, res) => {
 // Route
 app.use("/api/products", productRoute)
 app.use("/api/orders", orderRoute)
+app.use("/api/users", userRoute)
+
 
 // Error Handler
 // app.use(notFound)
