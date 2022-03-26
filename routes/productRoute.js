@@ -1,6 +1,7 @@
 import express from "express"
 import asyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
+// import {notFound} from "../middleware/errorMiddleware.js";
 
 const router = express.Router()
 
@@ -21,7 +22,12 @@ router.get('/', asyncHandler( async(req, res) => {
 router.get('/:productID', asyncHandler(async (req, res) => {
     const id = req.params.productID;
     const product = await Product.findById(id);
-    res.json(product);
+    if (product) {
+        res.json(product);
+    } else {
+        res.status(404);
+        throw new Error("Product not Found")
+    }
 }))
 
 router.post('/', asyncHandler(async (req, res) => {
@@ -77,6 +83,9 @@ router.put('/:productID', asyncHandler( async(req, res) => {
             msg : "updated at " + productID,
             product : updatedProduct
         })
+    } else {
+        res.status(404);
+        throw new Error("Product Not Found");
     }
 }))
 
@@ -93,6 +102,7 @@ router.delete('/:productID', asyncHandler( async (req, res) => {
     const id = req.params.productID;
     // remove delete
     await Product.findByIdAndRemove(id);
+
     res.json({
         msg: "deleted at "+ id,
     })
