@@ -38,12 +38,14 @@ router.post('/', asyncHandler(async (req, res) => {
     //     product: userInput
     // })
 
+    const {name, price, brand, category, desc} = req.body;
+
     const newProduct = new Product({
-        name: req.body.name,
-        price: req.body.price,
-        brand: req.body.brand,
-        category: req.body.category,
-        description: req.body.desc,
+        name,
+        price,
+        brand,
+        category,
+        description: desc,
     });
 
     const createdProduct = await newProduct.save();
@@ -57,18 +59,22 @@ router.post('/', asyncHandler(async (req, res) => {
 
 router.put('/:productID', asyncHandler( async(req, res) => {
 
-    const product = await Product.findById(req.params.productID);
+    const {name, price, brand, category, desc} = req.body
+
+    const {productID} = req.params;
+
+    const product = await Product.findById(productID);
 
     if (product) {
-        product.name = req.body.name || product.name;
-        product.price = req.body.price || product.price;
-        product.brand = req.body.brand || product.brand;
-        product.category = req.body.category || product.category;
-        product.description = req.body.desc || product.description;
+        product.name = name || product.name;
+        product.price = price || product.price;
+        product.brand = brand || product.brand;
+        product.category = category || product.category;
+        product.description = desc || product.description;
 
         const updatedProduct = await product.save();
         res.json({
-            msg : "updated at " + req.params.productID,
+            msg : "updated at " + productID,
             product : updatedProduct
         })
     }
