@@ -1,3 +1,7 @@
+import asyncHandler from "express-async-handler";
+import Product from "../models/productModel.js";
+import path from "path";
+
 const getProducts = asyncHandler(async (req, res) => {
   const pageSize = 2;
   const page = Number(req.query.pageNumber) || 1;
@@ -46,7 +50,7 @@ const createProduct = asyncHandler(async (req, res) => {
   //     msg: 'Created Product',
   //     product: userInput
   // })
-
+  console.log(req.file.path);
   const { name, price, brand, category, desc } = req.body;
 
   const newProduct = new Product({
@@ -55,6 +59,7 @@ const createProduct = asyncHandler(async (req, res) => {
     brand,
     category,
     description: desc,
+    image: req.file.path,
   });
 
   const createdProduct = await newProduct.save();
@@ -107,7 +112,7 @@ const deleteAProduct = asyncHandler(async (req, res) => {
   });
 });
 
-export default {
+export {
   getProducts,
   getProductByID,
   createProduct,
