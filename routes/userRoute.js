@@ -2,7 +2,7 @@ import express from "express";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -90,7 +90,6 @@ router.post(
   })
 );
 // 프로필 불러오기(로그인 한 사람)
-
 router.get(
   "/",
   protect,
@@ -99,6 +98,65 @@ router.get(
       msg: "profile",
       user: req.user,
     });
+  })
+);
+
+router.put(
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { name, email, password, bio, address, profileImg } = req.body;
+    console.log(req.user);
+
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.password = password || user.password;
+      user.bio = bio || user.bio;
+      user.address = address || user.address;
+      user.profileImg = profileImg || user.profileImg;
+
+      const updateduser = await user.save();
+      res.json({
+        msg: "updated at " + req.user._id,
+        user: updateduser,
+      });
+    } else {
+      res.status(404);
+      throw new Error("User Not Found");
+    }
+  })
+);
+
+router.put(
+  "/:userid",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const { name, email, password, bio, address, profileImg } = req.body;
+    console.log(req.user);
+
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.password = password || user.password;
+      user.bio = bio || user.bio;
+      user.address = address || user.address;
+      user.profileImg = profileImg || user.profileImg;
+
+      const updateduser = await user.save();
+      res.json({
+        msg: "updated at " + req.user._id,
+        user: updateduser,
+      });
+    } else {
+      res.status(404);
+      throw new Error("User Not Found");
+    }
   })
 );
 
