@@ -2,24 +2,25 @@ import express from "express";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import { protect } from "../middleware/authMiddleware.js";
 
-const router = express.Router()
-
+const router = express.Router();
 
 // Login, Sign up, Profile
 
-router.post('/', asyncHandler(async (req, res) => {
-
-    const {name, email, password} = req.body;
+router.post(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { name, email, password } = req.body;
 
     // email 유무 체크
     // password 암호화 / 프로필 이미지 자동 생성
     // response
 
-    const userExists = await User.findOne({ email } );
+    const userExists = await User.findOne({ email });
     if (userExists) {
-        res.status(400);
-        throw new Error("User already exists");
+      res.status(400);
+      throw new Error("User already exists");
     }
     // const hashedPassword = await bcrypt.hash(password, 10);
     //
@@ -42,75 +43,63 @@ router.post('/', asyncHandler(async (req, res) => {
     // const user = await newUser.save();
 
     const user = await User.create({
-        name,
-        email,
-        password,
-    })
+      name,
+      email,
+      password,
+    });
 
     if (user) {
-        res.json({
-            msg:"Sign up",
-            user
-        })
+      res.json({
+        msg: "Sign up",
+        user,
+      });
     } else {
-        res.status(408);
-        throw new Error("Invailed user Data");
+      res.status(408);
+      throw new Error("Invailed user Data");
     }
+  })
+);
 
-}))
-
-
-router.post('/login', asyncHandler(async(req, res) => {
+router.post(
+  "/login",
+  asyncHandler(async (req, res) => {
     // email 유무 체크
-    const {email, password} = req.body;
-    const user = await User.findOne({ email } );
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
     // console.log(userExists)
     if (!user) {
-        res.status(404);
-        throw new Error("User Not Found");
+      res.status(404);
+      throw new Error("User Not Found");
     }
     // password 매칭
     // const isMatched = await bcrypt.compare(password, user.password);
 
     const isMatched = await user.comparePassword(password);
     if (!isMatched) {
-        res.status(409);
-        throw new Error("Password is not matched");
+      res.status(409);
+      throw new Error("Password is not matched");
     }
     // console.log(i)
 
     // response
     res.json({
-        // test: isMatched,
-        success: isMatched,
-        token: generateToken(user._id)
-    })
-}))
+      // test: isMatched,
+      success: isMatched,
+      token: generateToken(user._id),
+    });
+  })
+);
+// 프로필 불러오기(로그인 한 사람)
 
-router.get('/', asyncHandler(async (req, res) => {
+router.get(
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
     res.json({
-        msg: "profile",
-    })
-}))
-
-
-
-
-
-
+      msg: "profile",
+      user: req.user,
+    });
+  })
+);
 
 export default router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
