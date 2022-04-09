@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+// 자기 자신꺼만 볼수이쓴거
+// 어드민이 오더 아이디로 ...
+
 const orderSchema = mongoose.Schema(
   {
     user: {
@@ -7,7 +10,7 @@ const orderSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    orderItem: [
+    orderItems: [
       {
         name: { type: String, required: true },
         qty: { type: Number, required: true },
