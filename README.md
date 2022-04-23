@@ -8,7 +8,7 @@
 
 ## 배포 - AWS Elastic Beanstalk
 
-> https://www.naver.com
+> https://example.com
 
 ## 프로젝트 설명
 
