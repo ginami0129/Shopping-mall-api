@@ -3,6 +3,7 @@ import Product from "../models/productModel.js";
 import path from "path";
 
 const getProducts = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Products']
   const pageSize = 2;
   const page = Number(req.query.pageNumber) || 1;
 
@@ -28,6 +29,7 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 const getProductByID = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Products']
   const id = req.params.productID;
   const product = await Product.findById(id);
   if (product) {
@@ -39,6 +41,7 @@ const getProductByID = asyncHandler(async (req, res) => {
 });
 
 const createProduct = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Products']
   // const userInput = {
   //     name: req.body.name,
   //     price: req.body.price,
@@ -71,6 +74,7 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Products']
   const { name, price, brand, category, desc } = req.body;
 
   const { productID } = req.params;
@@ -96,6 +100,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 const deleteAllProduct = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Products']
   await Product.remove();
   res.json({
     msg: "Deleted all Product",
@@ -103,6 +108,7 @@ const deleteAllProduct = asyncHandler(async (req, res) => {
 });
 
 const deleteAProduct = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Products']
   const id = req.params.productID;
   // remove delete
   await Product.findByIdAndRemove(id);

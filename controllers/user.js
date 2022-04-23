@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 
 const loginUser = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Users']
   // email 유무 체크
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -30,6 +31,10 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const registerUser = asyncHandler(async (req, res) => {
+  /*
+  #swagger.tags = ['Users']
+  */
+
   const { name, email, password } = req.body;
 
   // email 유무 체크
@@ -73,12 +78,13 @@ const registerUser = asyncHandler(async (req, res) => {
       user,
     });
   } else {
-    res.status(408);
+    res.status(422);
     throw new Error("Invailed user Data");
   }
 });
 
 const updateUser = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Users']
   const { name, email, password, bio, address, profileImg } = req.body;
   console.log(req.user);
 
@@ -104,6 +110,7 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 
 const updateUserOnlyAdmin = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Users']
   const { name, email, password, bio, address, profileImg } = req.body;
   console.log(req.user);
 
@@ -129,6 +136,7 @@ const updateUserOnlyAdmin = asyncHandler(async (req, res) => {
 });
 
 const getProfile = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Users']
   res.json({
     msg: "profile",
     user: req.user,

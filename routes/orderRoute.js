@@ -1,12 +1,13 @@
 import express from "express";
-import Order from "../models/orderModel.js";
 import asyncHandler from "express-async-handler";
 import { protect, admin } from "../middleware/authMiddleware.js";
 import {
   getOrders,
   createOrder,
   myOrder,
-  getOrderFromID,
+  updatePayStatus,
+  updateDeliveryStatus,
+  getOrderByID,
 } from "../controllers/order.js";
 
 const router = express.Router();
@@ -20,13 +21,14 @@ router.post("/", protect, createOrder);
 router.get("/myorder", protect, myOrder);
 
 // orderID 기반으로 찾기 (admin)
-router.get("/:orderID", protect, admin, getOrderFromID);
+router.get("/:orderID", protect, admin, getOrderByID);
 
 // 장바구니 업데이트
 router.put(
   "/",
   protect,
   asyncHandler(async (req, res) => {
+    // #swagger.tags = ['Orders']
     res.json({
       msg: "Update order",
     });
@@ -35,6 +37,7 @@ router.put(
 
 // 장바구니 삭제
 router.delete("/", (req, res) => {
+  // #swagger.tags = ['Orders']
   res.json({
     msg: "Delete order",
   });

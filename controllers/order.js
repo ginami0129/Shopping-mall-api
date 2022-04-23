@@ -1,7 +1,8 @@
 import asyncHandler from "express-async-handler";
-import Order from "../models/orderModel";
+import Order from "../models/orderModel.js";
 
 const getOrders = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Orders']
   const orders = await Order.find();
 
   res.json({
@@ -12,6 +13,7 @@ const getOrders = asyncHandler(async (req, res) => {
 });
 
 const createOrder = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Orders']
   const {
     orderItems,
     shippingAddress,
@@ -56,7 +58,18 @@ const createOrder = asyncHandler(async (req, res) => {
   //   });
 });
 
+const getOrderByID = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Orders']
+  const { orderID } = req.params;
+  const order = await Order.findById(orderID);
+  res.json({
+    msg: "test",
+    order,
+  });
+});
+
 const myOrder = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Orders']
   const order = await Order.findOne({ user: req.user._id });
   if (!order) {
     res.json({
@@ -69,16 +82,8 @@ const myOrder = asyncHandler(async (req, res) => {
   });
 });
 
-const getOrderFromID = asyncHandler(async (req, res) => {
-  const { orderID } = req.params;
-  const order = await Order.findById(orderID);
-  res.json({
-    msg: "test",
-    order,
-  });
-});
-
 const updatePayStatus = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Orders']
   const order = await Order.findById(req.params.id);
   // if (order.user != req.user._id) {
   //   res.status(408);
@@ -104,6 +109,7 @@ const updatePayStatus = asyncHandler(async (req, res) => {
 });
 
 const updateDeliveryStatus = asyncHandler(async (req, res) => {
+  // #swagger.tags = ['Orders']
   const order = await Order.findById(req.params.id);
   if (order) {
     order.isDelivered = true;
@@ -120,7 +126,7 @@ export {
   getOrders,
   createOrder,
   myOrder,
-  getOrderFromID,
   updatePayStatus,
   updateDeliveryStatus,
+  getOrderByID,
 };
